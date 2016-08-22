@@ -111,19 +111,18 @@ class ViewController1: NSViewController{
         // Build our various save paths and folders necessary to do such
        // let desktopDirectory: NSURL = NSURL(fileURLWithPath: NSHomeDirectory()).URLByAppendingPathComponent("Desktop/" + term + " Projects");
         let desktopDirectory: NSURL = NSURL(fileURLWithPath: NSHomeDirectory()).URLByAppendingPathComponent("Desktop/TempProjects");
-
         let netIdDirectory: NSURL  = desktopDirectory.URLByAppendingPathComponent(netId as String);
         let projectDirectory: NSURL = netIdDirectory.URLByAppendingPathComponent(projectName as String);
         let originalFilesDirectory: NSURL = projectDirectory.URLByAppendingPathComponent("File Repository");
         let fileSpecsDirectory: NSURL = projectDirectory.URLByAppendingPathComponent("File Specs");
-        let photoDirectory: NSURL = projectDirectory.URLByAppendingPathComponent("Photos of finished project");
+        //let photoDirectory: NSURL = projectDirectory.URLByAppendingPathComponent("Photos of finished project");
         
         //create the folder and filepath for our project
         var arrayOfFileSpecs = [String]();
         
         for item in arrayOfFileNames{
             
-            arrayOfFileSpecs.append("File specs for \(item).text");
+            arrayOfFileSpecs.append("File specs for \(item).txt");
             
         }
         
@@ -147,7 +146,6 @@ class ViewController1: NSViewController{
                 
             }
         }
-        
         
         //create project folder
         if( !(manager.fileExistsAtPath(projectDirectory.path!)) ){
@@ -186,16 +184,16 @@ class ViewController1: NSViewController{
             
         }
         //create photo folder in project folder
-        if( !(manager.fileExistsAtPath(photoDirectory.path!)) ){
-            
-            do{
-                try manager.createDirectoryAtURL(photoDirectory, withIntermediateDirectories: true, attributes: nil);
-                
-            }catch{
-                
-            }
-            
-        }
+//        if( !(manager.fileExistsAtPath(photoDirectory.path!)) ){
+//            
+//            do{
+//                try manager.createDirectoryAtURL(photoDirectory, withIntermediateDirectories: true, attributes: nil);
+//                
+//            }catch{
+//                
+//            }
+//            
+//        }
         
         //write everything out
         for i in 0...(arrayOfFileSpecs.count - 1){

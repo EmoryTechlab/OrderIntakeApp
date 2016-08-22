@@ -757,7 +757,6 @@ class ViewController: NSViewController{
         
         
         
-        
         for(var i = 0; i < fileCol.count; i++){
             let x: PrintOrder = PrintOrder.init(name: nameSelection as String, netID: netIdSelection as String, date: dateString as String);
             x.setOrderNumber(printOrderArray.count + 1);
@@ -779,7 +778,8 @@ class ViewController: NSViewController{
             x.updateMaterial(usageCol[i]);
             x.updateTime(timeCol[i]);
             x.updatePrice(priceCol[i]);
-            x.schoolAssociation = schoolSelection;
+            x.setSchoolAssocation(schoolSelection);
+            x.setColorOfMaterial(colorSelection);
             self.printOrderArray.append(x);
             
         }
