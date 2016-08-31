@@ -11,6 +11,7 @@ import Cocoa
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
     var pArray : [PrintOrder] = [];
+    var semester : String?;
     
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         // Insert code here to initialize your application
@@ -27,18 +28,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldTerminateAfterLastWindowClosed(sender: NSApplication) -> Bool {
         return true;
     }
-    
-    func prepareForSegue(segue: NSStoryboardSegue, sender: AnyObject?) ->  Void {
 
-     
-    }
-
-    @IBAction func viewStats(sender: AnyObject) {
-        let viewC: MainViewController = NSStoryboard(name: "Main", bundle: nil).instantiateInitialController() as! MainViewController;
-        let s = NSStoryboardSegue.init(identifier: "StatsSegue", source: viewC, destination: StatiticsController());
-        self.prepareForSegue(s, sender: viewC);
-
-        
-    }
 }
 

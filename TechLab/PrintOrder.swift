@@ -21,7 +21,7 @@ class PrintOrder: NSObject {
     
     var paidFor = false;
     var completed = false;
-    var photoTaken = false;
+    //var photoTaken = false;
     var emailSent = false;
     
     var materialValue: Double?;
@@ -78,9 +78,9 @@ class PrintOrder: NSObject {
         self.completed = !self.completed;
     }
     
-    func updatePhotTaken() -> Void{
-        self.photoTaken = !self.photoTaken;
-    }
+//    func updatePhotTaken() -> Void{
+//        self.photoTaken = !self.photoTaken;
+//    }
     
     func updateEmailSent() -> Void{
         self.emailSent = !self.emailSent;

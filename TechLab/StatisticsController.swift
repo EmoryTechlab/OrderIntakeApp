@@ -33,9 +33,9 @@ class StatiticsController: NSViewController{
     override func viewDidLoad() {
         
         super.viewDidLoad();
-        semester.stringValue = "Spring 2016";
         let mainVC = NSApplication.sharedApplication().mainWindow?.contentViewController as! MainViewController;
-        
+        semester.stringValue = mainVC.semester;
+
         var price = 0.0;
         var gram = 0.0;
         var mL = 0.0;

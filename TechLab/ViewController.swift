@@ -96,7 +96,7 @@ class ViewController: NSViewController{
     //MARK: - methods for populating the drop down menu buttons on the main window
     //------------------------------------Add Printer List-------------------------------------------------------
     func doAddItemsToPrintList() -> Void{
-        printer.addItemsWithTitles(["Replicator", "Form1+", "TAZ", "Polar3D" ]);
+        printer.addItemsWithTitles(["Replicator", "Form1+", "TAZ"]);
     }
     //------------------------------------Add Color List---------------------------------------------------------
     

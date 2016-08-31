@@ -2,66 +2,32 @@
 
 import Cocoa
 
-var str = "Hello, playground"
-
-var a = false;
-
-!a;
-
-str.characters.last;
-
-var test = "2552fsf25";
-
-
-var value: String = "";
-
-var stringWithoutDigit = (test.componentsSeparatedByCharactersInSet(NSCharacterSet.decimalDigitCharacterSet()) as NSArray).componentsJoinedByString("");
-
-
-var tempName = ("Jon S").stringByTrimmingCharactersInSet( NSCharacterSet.whitespaceAndNewlineCharacterSet());
-
-tempName.containsString(" ");
-
-
-var t: NSString = "e0";
-var y = t.substringToIndex(1);
-var h: Int = Int(t.characterAtIndex(0));
-
-
-let timeString = String(format: "%02d:%02d:00", 12, 6);
-
-test.substringToIndex(test.startIndex.advancedBy(1))
-
-
-var tt: Double = 4.00;
-
-var sf = String(format: "$%.2f", tt);
-
-
-var eli: NSString = NSString(string: "$4.00");
-Int(eli.substringFromIndex(1))
-
-
-var map = NSMapTable();
-
-map.setObject(3, forKey: "Test");
-
-var bo = "52:26:00";
-
-bo.componentsSeparatedByString(":");
-
-
-var dateString = "05/11/2016";
 
 
 
-var ttt = dateString.componentsSeparatedByString("/");
-var month: String = ttt[0];
-var day: String = ttt[1];
-var year: String = ttt[2];
+
+
+
+
+//let today: NSDate = NSDate();
+//let dateFormat: NSDateFormatter = NSDateFormatter();
+//dateFormat.setLocalizedDateFormatFromTemplate("MM/dd/yyyy");
+//let dateString = dateFormat.stringFromDate(today);
+//
+//var temp = Int(dateString.componentsSeparatedByString("/")[2]);
+
+
+let today: NSDate = NSDate();
+let dateFormat: NSDateFormatter = NSDateFormatter();
+dateFormat.setLocalizedDateFormatFromTemplate("MM/dd/yyyy");
+let dateString = dateFormat.stringFromDate(today);
+
+var temp = dateString.componentsSeparatedByString("/");
+let month: String = temp[0];
+let day: String = temp[1];
+let year: String = temp[2];
 
 var term: String = "";
-// var termWithoutSpace: String = "";
 
 let m = Int(month);
 let d = Int(day);
@@ -89,6 +55,10 @@ else if( m >= 5 && m <= 8){
 else if( m >= 8 && m <= 12){
     term = "Fall";
 }
-// termWithoutSpace = term + year;
-term += " \(year)";
-        
+else{
+    term = "Error";
+}
+term += "\(year)";
+
+var test = "TestMe"
+var lower = test.lowercaseString;
