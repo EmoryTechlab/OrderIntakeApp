@@ -14,8 +14,9 @@ class MainViewController: NSViewController{
     
     var printOrderArray = [PrintOrder]();
     var semester: String = "";
-    var printerList = [];
-    var colorList = [];
+    var colorList = ["white", "black", "clear", "grey", "red", "blue", "green", "gold"];
+    var printerList = ["Replicator", "Form1+", "TAZ"];
+    var printerFileDict = ["Replicator": ["thing"], "Form1+": ["form"], "TAZ": ["amf"] ];
     
     @IBOutlet var mainTable: NSTableView!;
     
@@ -25,6 +26,7 @@ class MainViewController: NSViewController{
         
         super.viewDidLoad();
         self.initSemester();
+        //self.initPrinterFileTypeDict();
     }
 
     //------------------------------------Add Print Job Order------------------------------------------------------
@@ -46,7 +48,13 @@ class MainViewController: NSViewController{
         infoWindow.mainWindow = self;
         
     }
-    
+    //------------------------------------Initialize Printer-File Dictionary------------------------------------------------------
+//    func initPrinterFileTypeDict()-> Void {
+//        for item in printerList{
+//            printerFileDict[item] = [String]();
+//        }
+//    }
+//    
     //------------------------------------Initialize Semester------------------------------------------------------
     //Logic that gets the current date and finds the corresponding current semester
     func initSemester() -> Void {

@@ -8,9 +8,6 @@
 
 import Cocoa
 
-protocol SegueProtocol {
-    func setSemesterValue(valueSent: String)
-}
 
 class SettingsController: NSViewController {
 
@@ -18,18 +15,23 @@ class SettingsController: NSViewController {
     @IBOutlet weak var seasonButton: NSPopUpButton!
     @IBOutlet weak var yearButton: NSPopUpButton!
     
-    var mainVC: MainViewController?;
+    var mainVC: MainViewController? = NSApplication.sharedApplication().mainWindow?.contentViewController as? MainViewController;
     var seasonStr: String = "";
     var yearStr: String = "";
     
-    var colors = ["white", "black", "clear", "grey", "red", "blue", "green", "orange"];
-    var printers = ["Replicator", "Form1+", "TAZ"];
-
-    @IBOutlet weak var colorInput: NSTextField!
+    var colors = [String]();
+      @IBOutlet weak var colorInput: NSTextField!
+        @IBOutlet var colorList: NSTextView!
+        @IBOutlet weak var colorErrorLabel: NSTextField!
+    
+    var printers = [String]();
+    var printerFileDict = [String: [String]]();
+    
+  
     @IBOutlet weak var printerInput: NSTextField!
-    @IBOutlet var colorList: NSTextView!
+
     @IBOutlet var printerList: NSTextView!
-    @IBOutlet weak var colorErrorLabel: NSTextField!
+
     @IBOutlet weak var printerErrorLabel: NSTextField!
     //------------------------------------View Did Load-------------------------------------------------------
     override func viewDidLoad() {
@@ -38,7 +40,7 @@ class SettingsController: NSViewController {
         self.doAddItemsToYearList();
         self.addInitialColorsToList();
         self.addInitialPrintersToList();
-        mainVC = NSApplication.sharedApplication().mainWindow?.contentViewController as? MainViewController;
+//        mainVC = NSApplication.sharedApplication().mainWindow?.contentViewController as? MainViewController;
         
     }
     
@@ -73,18 +75,20 @@ class SettingsController: NSViewController {
     //------------------------------------Add Initial Values to Lists-------------------------------------------------------
     func addInitialColorsToList() -> Void{
         colorList.editable = true;
-
+        colors = mainVC!.colorList;
         colorList.insertText(colors.joinWithSeparator("\n"));
         colorList.editable = false;
+        
     }
     
     func addInitialPrintersToList() -> Void{
         printerList.editable = true;
+        printers = mainVC!.printerList;
         printerList.insertText(printers.joinWithSeparator("\n"));
         printerList.editable = false;
     }
     
-    //------------------------------------Add/Delete For Colors-------------------------------------------------------
+    //------------------------------------Validate Input-------------------------------------------------------
     func validateInput(input:String)->Bool{
         var valid = true;
         
@@ -155,7 +159,7 @@ class SettingsController: NSViewController {
     }
     
     //------------------------------------Add/Delete For Printers-------------------------------------------------------
-    //---Add
+    //------------Add
     @IBAction func addPrinter(sender: AnyObject) {
         
         let printerToAdd = printerInput.stringValue;
@@ -176,20 +180,50 @@ class SettingsController: NSViewController {
         }
         
         if(!found){
+            
+            addFileTypeForPrinter(printerToAdd);
             printerList.editable = true;
-
             printers.append(printerToAdd);
             printerList.insertText("\n"+printerToAdd);
             printerErrorLabel.stringValue = "";
-            
+
             printerList.editable = false;
         }
         else{
             printerErrorLabel.stringValue = printerToAdd + "\n already exists!";
         }
         
-        
         printerInput.stringValue = "";
+    }
+    
+    //--------Add file type(s) for printer
+    func addFileTypeForPrinter(printerName: String) -> (fileExts: [String], hasError:Bool){
+        
+        let msg = NSAlert()
+        msg.addButtonWithTitle("OK")      // 1st button
+        msg.addButtonWithTitle("Cancel")  // 2nd button
+        msg.messageText = "Enter the compatible file extension(s) for the " + printerName;
+        msg.informativeText = "You may enter multiple extentions separated by commas.";
+        
+        let extInput = NSTextField(frame: NSRect(x: 0, y: 0, width: 300, height: 50))
+        extInput.placeholderString = "obj";
+        
+        msg.accessoryView = extInput;
+        let response: NSModalResponse = msg.runModal()
+        
+        if (response == NSAlertFirstButtonReturn) {
+            let valid = validateInput(extInput.stringValue);
+            if(valid){
+                return (extInput.stringValue.componentsSeparatedByString(","), false);
+            }
+            else{
+                return ([String](), true);
+            }
+        }
+        
+        return ([String](), false);
+        
+        
     }
     //---Delete
     @IBAction func deletePrinter(sender: AnyObject) {

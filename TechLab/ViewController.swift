@@ -91,17 +91,21 @@ class ViewController: NSViewController{
     
     //MARK: - Reference to main controller queue
     var mainWindow: MainViewController?;
+    var semester: String?;
+    var colorList = [String]();
+    var printerList = [String]();
+    var printerFileDict = [String: [String]]();
     
     
     //MARK: - methods for populating the drop down menu buttons on the main window
     //------------------------------------Add Printer List-------------------------------------------------------
     func doAddItemsToPrintList() -> Void{
-        printer.addItemsWithTitles(["Replicator", "Form1+", "TAZ"]);
+        printer.addItemsWithTitles(self.printerList);
     }
     //------------------------------------Add Color List---------------------------------------------------------
     
     func doAddItemsToColorList() -> Void{
-        color.addItemsWithTitles(["white", "black", "clear", "grey", "red", "blue", "green", "orange"])
+        color.addItemsWithTitles(self.colorList);
     }
     //------------------------------------Add Infill List----------------------------------------------------------
     func doAddItemsToInfillList() -> Void{
@@ -151,6 +155,13 @@ class ViewController: NSViewController{
         
         super.viewDidLoad()
         
+        //setting values passed in from settings tabs
+        self.semester = self.mainWindow?.semester;
+        self.colorList = (self.mainWindow?.colorList)!;
+        self.printerList = (self.mainWindow?.printerList)!;
+        self.printerFileDict = (self.mainWindow?.printerFileDict)!;
+        
+        
         self.doAddItemsToPrintList();
         self.doAddItemsToColorList();
         self.doAddItemsToInfillList();
@@ -161,7 +172,6 @@ class ViewController: NSViewController{
         self.doAddItemsToPurposeList();
         self.doAddItemsToMinutesList();
         self.doAddItemsToHoursList();
-        
         
     }
     
@@ -387,16 +397,40 @@ class ViewController: NSViewController{
     
     //Checks whether the choosen file matches its corresponding printer
     func validatePrinterFileMatch(filePath: String, printer: String)->(errorExist: Bool, message: String){
+//        var hasError = false;
+//        var errorMess = "";
+// 
+//        
+//        let fileExtension = fileLocationSelection.pathExtension;
+//        
+//        
+//        if( (fileExtension == "amf" && printerSelection != "TAZ") || (fileExtension == "thing" && printerSelection != "Replicator") || (fileExtension == "form" && printerSelection != "Form1+")){
+//            hasError = true;
+//            errorMess = "\t\t\t\t😱 \n\t \tPrinter and File Mismatch Error\n\nPlease make sure the file corressponds to the correct printer: \n\n .thing (Replicator) \n .form (Form1+) \n .amf   (TAZ)";
+//            printerLabel.textColor = NSColor.redColor();
+//            fileLabel.textColor = NSColor.redColor();
+//        }
+//        
+//        return(hasError, errorMess);
+        
         var hasError = false;
         var errorMess = "";
- 
-        let tempExt = fileLocationSelection.pathExtension;
-        if( (tempExt == "amf" && printerSelection != "TAZ") || (tempExt == "thing" && printerSelection != "Replicator") || (tempExt == "form" && printerSelection != "Form1+")){
+        
+        
+        let fileExtension = fileLocationSelection.pathExtension;
+        
+        print("printer: " + printer)
+        print("file extension: " + fileExtension);
+        print(printerFileDict[printer]);
+        
+        if( printerFileDict[printer]?.indexOf(fileExtension) == nil ) {
             hasError = true;
             errorMess = "\t\t\t\t😱 \n\t \tPrinter and File Mismatch Error\n\nPlease make sure the file corressponds to the correct printer: \n\n .thing (Replicator) \n .form (Form1+) \n .amf   (TAZ)";
             printerLabel.textColor = NSColor.redColor();
             fileLabel.textColor = NSColor.redColor();
         }
+
+        
         
         return(hasError, errorMess);
         

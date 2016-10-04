@@ -62,3 +62,10 @@ term += "\(year)";
 
 var test = "TestMe"
 var lower = test.lowercaseString;
+
+
+
+var printerFileDict = [String: [String]]();
+
+printerFileDict["testMe"]?.append("What is love?");
+printerFileDict["testMe"]?.append(", baby don't hurt me, don't hurt me");
