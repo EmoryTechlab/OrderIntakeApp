@@ -237,25 +237,30 @@ class ViewController: NSViewController{
             filePath = NSURL(fileURLWithPath: panel.URLs[0].path!)
         }
         
-        // let tempString: String = (filePath?.lastPathComponent!.pathExtension)!;
-        let tempString = filePath?.pathExtension;
+        let fileExtenion = filePath?.pathExtension;
         
         
         
         //Input validation for the file extension.
-        if (tempString == "thing" || tempString == "amf" || tempString == "form"){
-            
+        var validFileExtension = false;
+        
+        for key in (self.mainWindow?.printerFileDict.keys)!{
+            if( self.mainWindow?.printerFileDict[key]?.indexOf(fileExtenion!) != nil){
+                validFileExtension = true;
+                break;
+            }
+        }
+        if(validFileExtension){
             fileLocation.stringValue = filePath!.path!// as String;
             fileLabel.textColor = NSColor.blackColor();
-            
         }
-        else if (tempString == ""){
+        else if (fileExtenion == ""){
             return
         }
         else{
             
             let fileExtensionErrorPopUp = NSAlert();
-            fileExtensionErrorPopUp.messageText = "\tInvalid file extension error\n\nPlease choose a file with one of the following extensions: \n\n .thing (Makerbot) \n .form (PreFrom) \n .amf   (Cura)"
+            fileExtensionErrorPopUp.messageText = "\tInvalid file extension error\n\nPlease choose a file with one of the appropriate file extensions for the 3D Printers: \n\nFor Example: \n\n .thing (Makerbot) \n .form (PreFrom) \n .amf   (Cura)"
             fileExtensionErrorPopUp.runModal();
             fileLabel.textColor = NSColor.redColor();
         }
@@ -396,36 +401,17 @@ class ViewController: NSViewController{
     //------------------------------------Printer and File Type Match Validation-------------------------------------------------------
     
     //Checks whether the choosen file matches its corresponding printer
-    func validatePrinterFileMatch(filePath: String, printer: String)->(errorExist: Bool, message: String){
-//        var hasError = false;
-//        var errorMess = "";
-// 
-//        
-//        let fileExtension = fileLocationSelection.pathExtension;
-//        
-//        
-//        if( (fileExtension == "amf" && printerSelection != "TAZ") || (fileExtension == "thing" && printerSelection != "Replicator") || (fileExtension == "form" && printerSelection != "Form1+")){
-//            hasError = true;
-//            errorMess = "\t\t\t\t😱 \n\t \tPrinter and File Mismatch Error\n\nPlease make sure the file corressponds to the correct printer: \n\n .thing (Replicator) \n .form (Form1+) \n .amf   (TAZ)";
-//            printerLabel.textColor = NSColor.redColor();
-//            fileLabel.textColor = NSColor.redColor();
-//        }
-//        
-//        return(hasError, errorMess);
+    func validatePrinterFileMatch(filePath: NSString, printer: String)->(errorExist: Bool, message: String){
         
         var hasError = false;
         var errorMess = "";
+    
+        let fileExtension = filePath.pathExtension;
         
-        
-        let fileExtension = fileLocationSelection.pathExtension;
-        
-        print("printer: " + printer)
-        print("file extension: " + fileExtension);
-        print(printerFileDict[printer]);
         
         if( printerFileDict[printer]?.indexOf(fileExtension) == nil ) {
             hasError = true;
-            errorMess = "\t\t\t\t😱 \n\t \tPrinter and File Mismatch Error\n\nPlease make sure the file corressponds to the correct printer: \n\n .thing (Replicator) \n .form (Form1+) \n .amf   (TAZ)";
+            errorMess = "\t\t\t\t😱 \n\t \tPrinter and File Mismatch Error\n\nPlease make sure the file being loaded corressponds to the correct printer: \n\nFor Example:\nn .thing (Replicator) \n .form (Form1+) \n .amf   (TAZ)";
             printerLabel.textColor = NSColor.redColor();
             fileLabel.textColor = NSColor.redColor();
         }
@@ -537,7 +523,7 @@ class ViewController: NSViewController{
         usageValue = Double(usage.stringValue)!;
         
         //--Printer File Match validation
-        let valPrintFileMatch = validatePrinterFileMatch(fileLocationSelection as String, printer: printerSelection);
+        let valPrintFileMatch = validatePrinterFileMatch(fileLocationSelection, printer: printerSelection);
         if(valPrintFileMatch.errorExist){
             let printerFileError = NSAlert();
             printerFileError.accessoryView = NSView.init(frame: NSRect(x: 0, y: 0, width: 350, height: 0));
@@ -732,8 +718,6 @@ class ViewController: NSViewController{
         }
         numberArray.append(Double(temp_number));
         
-//        let priceOfPrint = "$\(temp_number).00";
-//        return priceOfPrint;
         return temp_number;
         
     }
@@ -791,7 +775,7 @@ class ViewController: NSViewController{
         
         
         
-        for(var i = 0; i < fileCol.count; i++){
+        for i in 0...fileCol.count-1{
             let x: PrintOrder = PrintOrder.init(name: nameSelection as String, netID: netIdSelection as String, date: dateString as String);
             x.setOrderNumber(printOrderArray.count + 1);
             x.setfile(fileCol[i]);

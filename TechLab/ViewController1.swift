@@ -60,65 +60,18 @@ class ViewController1: NSViewController{
     
     @IBAction func package(sender: AnyObject) {
         
-        //Uses the current date to determine the corresponding academic term for data storing purposes.
-        let today: NSDate = NSDate();
-        let dateFormat: NSDateFormatter = NSDateFormatter();
-        dateFormat.setLocalizedDateFormatFromTemplate("MM/dd/yyyy");
-        let dateString = dateFormat.stringFromDate(today);
-        
-        var temp = dateString.componentsSeparatedByString("/");
-        let month: String = temp[0];
-        let day: String = temp[1];
-        let year: String = temp[2];
-        
-        var term: String = "";
-        
-        
-       // var termWithoutSpace: String = "";
-        
-        let m = Int(month);
-        let d = Int(day);
-        
-        if( m >= 1 && m <= 5){
-            if( m == 5){
-                if( d <= 10 ){ term = "Spring";}
-                else         { term = "Summer";}
-            }
-            else{
-                term =  "Spring";
-            }
-            
-        }
-        else if( m >= 5 && m <= 8){
-            if( m == 8){
-                if(d <= 11){ term = "Summer"; }
-                else       { term = "Fall";   }
-            }
-            else{
-                term = "Summer";
-            }
-            
-        }
-        else if( m >= 8 && m <= 12){
-            term = "Fall";
-        }
-       // termWithoutSpace = term + year;
-        term += " \(year)";
-        
-        
-        
-        
+      
         // Build our various save paths and folders necessary to do such
-       // let desktopDirectory: NSURL = NSURL(fileURLWithPath: NSHomeDirectory()).URLByAppendingPathComponent("Desktop/" + term + " Projects");
-        let desktopDirectory: NSURL = NSURL(fileURLWithPath: NSHomeDirectory()).URLByAppendingPathComponent("Desktop/TempProjects");
+        let desktopDirectory: NSURL = NSURL(fileURLWithPath: NSHomeDirectory()).URLByAppendingPathComponent("Desktop/" + (mainWindow?.semester)! + " Projects");
         let netIdDirectory: NSURL  = desktopDirectory.URLByAppendingPathComponent(netId as String);
         let projectDirectory: NSURL = netIdDirectory.URLByAppendingPathComponent(projectName as String);
         let originalFilesDirectory: NSURL = projectDirectory.URLByAppendingPathComponent("File Repository");
         let fileSpecsDirectory: NSURL = projectDirectory.URLByAppendingPathComponent("File Specs");
-        //let photoDirectory: NSURL = projectDirectory.URLByAppendingPathComponent("Photos of finished project");
         
         //create the folder and filepath for our project
         var arrayOfFileSpecs = [String]();
+        
+        
         
         for item in arrayOfFileNames{
             
@@ -183,17 +136,6 @@ class ViewController1: NSViewController{
             
             
         }
-        //create photo folder in project folder
-//        if( !(manager.fileExistsAtPath(photoDirectory.path!)) ){
-//            
-//            do{
-//                try manager.createDirectoryAtURL(photoDirectory, withIntermediateDirectories: true, attributes: nil);
-//                
-//            }catch{
-//                
-//            }
-//            
-//        }
         
         //write everything out
         for i in 0...(arrayOfFileSpecs.count - 1){
@@ -208,23 +150,11 @@ class ViewController1: NSViewController{
         
         //check for waitlist
         let desktopDirectoryForQueue: NSURL = NSURL(fileURLWithPath: NSHomeDirectory()).URLByAppendingPathComponent("Desktop");
-        //let waitList: String = "3D_Printing_Request_Queue_" + termWithoutSpace + ".xls";
-        let waitList: String = "3D_Printing_Request_Queue_Temp.xls";
+        let waitList: String = "3D_Printing_Request_Queue_" + (mainWindow?.semester)! + ".xls";
         let waitListLocation:NSURL = desktopDirectoryForQueue.URLByAppendingPathComponent(waitList);
-        let waitListInitialContent: String = "Name \t Date \t File \t Job Paid For \t Print Completed \t Photo Taken \t Email Sent \t Est. Material \t Est. Time \t Price";
+        let waitListInitialContent: String = "Name \t Date \t File \t Job Paid For \t Print Completed \t Email Sent \t Est. Material \t Est. Time \t Price";
         
-//        if( manager.fileExistsAtPath(waitListLocation.path!)){
-//            print("The List already exists");
-//        }
-//        else{
-//            do{
-//                try waitListInitialContent.writeToFile(waitListLocation.path!, atomically: true, encoding: NSUTF8StringEncoding);
-//            }catch{
-//                
-//            }
-//            
-//            
-//        }
+
         if( !manager.fileExistsAtPath(waitListLocation.path!)){
             do{
                 try waitListInitialContent.writeToFile(waitListLocation.path!, atomically: true, encoding: NSUTF8StringEncoding);
@@ -244,9 +174,7 @@ class ViewController1: NSViewController{
         //Determines whether or not the queue is open in excel or not. If it is open, an alert will pop up and prompt the user to save and close the queue before continuing.
         let task: NSTask = NSTask();
         task.launchPath = "/usr/sbin/lsof";
-//        let filepath = "/Users/template/Desktop/3D_Printing_Request_Queue_" + termWithoutSpace + ".xls";
-        let filepath = "/Users/template/Desktop/3D_Printing_Request_Queue_Temp.xls";
-
+        let filepath = "/Users/template/Desktop/3D_Printing_Request_Queue_" + (mainWindow?.semester)! + ".xls";
         
         let pipe:NSPipe = NSPipe();
         task.arguments = [filepath];
@@ -268,25 +196,8 @@ class ViewController1: NSViewController{
         }
         
         
-        
+        //copying print files from thier locations into the file repository folders
         for i in 0...(arrayOfFileLocations.count - 1){
-            
-//            //if there is no file to copy
-//            if(arrayOfFileLocations[i].characters.count == 0){
-//                
-//                print("No file to copy");
-//                
-//            }
-//            else{
-//                
-//                do{
-//                    try manager.copyItemAtPath(arrayOfFileLocations[i], toPath: destinationFileLocation[i]);
-//                }catch{
-//                    
-//                }
-//                
-//            }
-            
             
             if(arrayOfFileLocations[i].characters.count != 0){
                 
@@ -305,11 +216,10 @@ class ViewController1: NSViewController{
         //appends users to the waitlist
         var waitListContent = [String]();
         for i in 0...(arrayOfFileNames.count - 1){
-            let temp = "\n\(name)\t\(dateString)\t\(arrayOfFileNames[i])\t\t\t\t\t\(arrayOfUsages[i])\t\(arrayOfEstTimes[i])\t\(arrayOfPrices[i])";
+            let temp = "\n\(name)\t\(dateString)\t\(arrayOfFileNames[i])\t\t\t\t\(arrayOfUsages[i])\t\(arrayOfEstTimes[i])\t\(arrayOfPrices[i])";
             waitListContent.append(temp);
         }
         
-        //let handle: NSFileHandle = NSFileHandle(forUpdatingAtPath: waitListLocation)!;
         var handle: NSFileHandle;
         do{
             try handle = NSFileHandle(forUpdatingURL: waitListLocation);

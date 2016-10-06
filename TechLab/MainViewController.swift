@@ -10,10 +10,12 @@ import Cocoa
 import Foundation
 
 
-class MainViewController: NSViewController{
+class MainViewController: NSViewController {
     
     var printOrderArray = [PrintOrder]();
     var semester: String = "";
+    
+    //These are hard coded initial values for the colors, printers, and the applicable file types for each of these printers
     var colorList = ["white", "black", "clear", "grey", "red", "blue", "green", "gold"];
     var printerList = ["Replicator", "Form1+", "TAZ"];
     var printerFileDict = ["Replicator": ["thing"], "Form1+": ["form"], "TAZ": ["amf"] ];
@@ -26,7 +28,6 @@ class MainViewController: NSViewController{
         
         super.viewDidLoad();
         self.initSemester();
-        //self.initPrinterFileTypeDict();
     }
 
     //------------------------------------Add Print Job Order------------------------------------------------------
@@ -48,13 +49,7 @@ class MainViewController: NSViewController{
         infoWindow.mainWindow = self;
         
     }
-    //------------------------------------Initialize Printer-File Dictionary------------------------------------------------------
-//    func initPrinterFileTypeDict()-> Void {
-//        for item in printerList{
-//            printerFileDict[item] = [String]();
-//        }
-//    }
-//    
+   
     //------------------------------------Initialize Semester------------------------------------------------------
     //Logic that gets the current date and finds the corresponding current semester
     func initSemester() -> Void {
@@ -105,8 +100,6 @@ class MainViewController: NSViewController{
         self.semester = term;
     }
     
-    
-    
 }
 
 // MARK: - NSTableViewDataSource
@@ -140,7 +133,6 @@ extension MainViewController: NSTableViewDataSource{
             case "colorColumn" : view.textField!.stringValue = x.materialColor!;
             case "paidColumn" : view.textField!.stringValue = "\(x.paidFor)";
             case "completedColumn" : view.textField!.stringValue = "\(x.completed)";
-            //case "photoColumn" : view.textField!.stringValue = "\(x.photoTaken)";
             case "emailSentColumn" : view.textField!.stringValue = "\(x.emailSent)";
             case "materialColumn" : view.textField!.stringValue = x.material!;
             case "timeColumn" : view.textField!.stringValue = x.time!;

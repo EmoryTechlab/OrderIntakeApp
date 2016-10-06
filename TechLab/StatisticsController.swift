@@ -33,6 +33,8 @@ class StatiticsController: NSViewController{
     override func viewDidLoad() {
         
         super.viewDidLoad();
+        
+        
         let mainVC = NSApplication.sharedApplication().mainWindow?.contentViewController as! MainViewController;
         semester.stringValue = mainVC.semester;
 
@@ -41,9 +43,11 @@ class StatiticsController: NSViewController{
         var mL = 0.0;
 
         for x in mainVC.printOrderArray{
+            
             var isGram = true;
             let tempStr:NSString = NSString(string: x.price!);
             price = price + Double(tempStr.substringFromIndex(1))!;
+            
             let type = x.materialType;
             if( type!.hasSuffix("mL") ){
                 isGram = false;
@@ -107,6 +111,7 @@ class StatiticsController: NSViewController{
         
     }
     
+    //helper function that builds an appropriate formatted string from the inputted dictionary to be displayed in the textview 
     func buildString( inputMap: Dictionary<String, Int>) -> String{
         
         var str: String = "";
@@ -117,6 +122,8 @@ class StatiticsController: NSViewController{
         
     }
     
+    
+    //exports statistics for the given semester to the Downloads folder
     @IBAction func export(sender: AnyObject) {
         
         let str = semester.stringValue + "\n\n" +

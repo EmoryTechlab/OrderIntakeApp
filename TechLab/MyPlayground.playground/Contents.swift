@@ -69,3 +69,18 @@ var printerFileDict = [String: [String]]();
 
 printerFileDict["testMe"]?.append("What is love?");
 printerFileDict["testMe"]?.append(", baby don't hurt me, don't hurt me");
+
+
+
+
+
+public static double calculateTip(double tip, double percentage{
+print 782.0;
+}
+
+
+main{
+
+double tip = calculateTip(40.0, 0.15);
+
+}

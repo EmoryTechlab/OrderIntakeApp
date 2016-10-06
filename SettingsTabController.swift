@@ -8,6 +8,13 @@
 
 import Cocoa
 
+/*
+ This file contains multiple classes, one for the actual Tab View Controller and one for each of the individual tab views.
+ This may not be a standard way of doing things, but it seemed a bit unnecesary to create a separate file for each of the tabs.
+ That being said, a separate file may be created for each tab if it is determined that this way is bad practice.
+ 
+ */
+
 
 //============================================================================================================================================================================================================================================================
 class SettingsTabController: NSTabViewController {
@@ -68,11 +75,20 @@ class SemesterTab: NSViewController{
     }
     
     //------------------------------------Send Updated Values-------------------------------------------------------
-    func sendUpdatedValues() -> Void{
+    //updates the semester string in the main controller so that updates from settings view correctly propagate
+    @IBAction func changeSemester(sender: AnyObject) {
+        
         seasonStr = seasonButton.titleOfSelectedItem!;
         yearStr = yearButton.titleOfSelectedItem!;
         mainVC!.semester = seasonStr + yearStr;
+        
+        //alert so that user know that changes where actually made
+        let alert = NSAlert();
+        alert.accessoryView = NSView.init(frame: NSRect(x: 0, y: 0, width: 350, height: 0));
+        alert.messageText = " \t\t\t\t\t\u{1F44D}\n\n Semester has been changed.";
+        alert.runModal();
     }
+
     
 }
 
@@ -107,9 +123,11 @@ class ColorTab: NSViewController{
     func validateInput(input:String)->Bool{
         var valid = true;
         
+        //if empty
         if(input.characters.count == 0){
             valid = false;
         }
+        //deals with the case of a bunch of spaces
         if(input.stringByReplacingOccurrencesOfString(" ", withString: "", options: NSStringCompareOptions(), range: nil).characters.count == 0){
             valid = false;
         }
@@ -122,15 +140,15 @@ class ColorTab: NSViewController{
         
         let colorToAdd = colorInput.stringValue.lowercaseString.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet());
         
-        if(!validateInput(colorToAdd)){
+        if(!validateInput(colorToAdd)){ //if invalid input
             colorInput.stringValue = "";
             return;
         }
         
-        if( colors.contains(colorToAdd) ){
+        if( colors.contains(colorToAdd) ){ //if color already exists
             colorErrorLabel.stringValue = colorToAdd + "\n already exists!"
         }
-        else{
+        else{ //else add colors
             colorList.editable = true;
             
             colors.append(colorToAdd);
@@ -149,13 +167,13 @@ class ColorTab: NSViewController{
         
         let colorToDel = colorInput.stringValue.lowercaseString.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet());
         
-        if(!validateInput(colorToDel)){
+        if(!validateInput(colorToDel)){ //if invalid input
             colorInput.stringValue = "";
             return;
         }
         
         
-        if( colors.contains(colorToDel)){
+        if( colors.contains(colorToDel)){ //delete color
             colorList.editable = true;
             
             colors.removeAtIndex(colors.indexOf(colorToDel)!);
@@ -167,7 +185,7 @@ class ColorTab: NSViewController{
             
             self.sendUpdatedValues();
         }
-        else{
+        else{ //if color does not exit
             colorErrorLabel.stringValue = colorToDel + "\n does not exist!";
         }
         
@@ -176,6 +194,7 @@ class ColorTab: NSViewController{
     
     
     //------------------------------------Send Updated Values-------------------------------------------------------
+    //updates the color list in the main controller so that updates from settings view correctly propagate
     func sendUpdatedValues() -> Void{
         mainVC!.colorList = colors;
     }
@@ -204,6 +223,7 @@ class PrinterTab: NSViewController{
     
     //------------------------------------Add Initial Printers and File Extensions-------------------------------------------------------
     func addInitialPrintersToList() -> Void{
+        
         printerList.editable = true;
         printers = mainVC!.printerList;
         printerList.insertText(printers.joinWithSeparator("\n"));
@@ -232,7 +252,8 @@ class PrinterTab: NSViewController{
     @IBAction func addPrinter(sender: AnyObject) {
         
         let printerToAdd = printerInput.stringValue.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet());
-        if(!validateInput(printerToAdd)){
+        
+        if(!validateInput(printerToAdd)){ //if invalid input
             printerInput.stringValue = "";
             return;
         }
@@ -248,15 +269,16 @@ class PrinterTab: NSViewController{
             }
         }
         
-        if(!found){
+        if(!found){ //if printer does not exit, add it
             
             let val = addFileTypeForPrinter(printerToAdd);
             if(!val.hasError){
+                
                 printerFileDict[printerToAdd] = [];
                 for item in val.fileExtentions{
                     printerFileDict[printerToAdd]?.append(item);
                 }
-                print(printerFileDict)
+                
                 printerList.editable = true;
                 printers.append(printerToAdd);
                 printerList.insertText("\n"+printerToAdd);
@@ -267,7 +289,7 @@ class PrinterTab: NSViewController{
             }
 
         }
-        else{
+        else{ //if printer already exists
             printerErrorLabel.stringValue = printerToAdd + "\n already exists!";
         }
         
@@ -284,7 +306,7 @@ class PrinterTab: NSViewController{
         msg.informativeText = "You may enter multiple extentions separated by commas.";
         
         let extInput = NSTextField(frame: NSRect(x: 0, y: 0, width: 300, height: 50))
-        extInput.placeholderString = "Example: thing, amf, form";
+        extInput.placeholderString = "Example: amf";
         
         msg.accessoryView = extInput;
         let response: NSModalResponse = msg.runModal()
@@ -306,7 +328,7 @@ class PrinterTab: NSViewController{
         
     }
     
-    //---Helper function
+    //---Helper function that strips spaces and punctuations from user input incase the user typed .amf instead of just amf for file extension
     func formatStringInput(input: String) -> String {
         
         var cleanInput = input;
@@ -365,6 +387,7 @@ class PrinterTab: NSViewController{
     
     
     //------------------------------------Send Updated Values-------------------------------------------------------
+    //updates the printer and printer-file_extension lists in the main controller so that updates from settings view correctly propagate
     func sendUpdatedValues() -> Void{
         
         mainVC!.printerList = printers;
