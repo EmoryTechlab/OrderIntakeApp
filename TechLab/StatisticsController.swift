@@ -35,7 +35,7 @@ class StatiticsController: NSViewController{
         super.viewDidLoad();
         
         
-        let mainVC = NSApplication.sharedApplication().mainWindow?.contentViewController as! MainViewController;
+        let mainVC = NSApplication.shared().mainWindow?.contentViewController as! MainViewController;
         semester.stringValue = mainVC.semester;
 
         var price = 0.0;
@@ -46,7 +46,7 @@ class StatiticsController: NSViewController{
             
             var isGram = true;
             let tempStr:NSString = NSString(string: x.price!);
-            price = price + Double(tempStr.substringFromIndex(1))!;
+            price = price + Double(tempStr.substring(from: 1))!;
             
             let type = x.materialType;
             if( type!.hasSuffix("mL") ){
@@ -61,7 +61,7 @@ class StatiticsController: NSViewController{
             }
             
             
-            let tempArr = x.time!.componentsSeparatedByString(":");
+            let tempArr = x.time!.components(separatedBy: ":");
 
             for i in 0...tempArr.count-1{
                 timeArr[i] = timeArr[i] + Int(tempArr[i])!;
@@ -112,7 +112,7 @@ class StatiticsController: NSViewController{
     }
     
     //helper function that builds an appropriate formatted string from the inputted dictionary to be displayed in the textview 
-    func buildString( inputMap: Dictionary<String, Int>) -> String{
+    func buildString( _ inputMap: Dictionary<String, Int>) -> String{
         
         var str: String = "";
         for(key, value) in inputMap{
@@ -124,7 +124,7 @@ class StatiticsController: NSViewController{
     
     
     //exports statistics for the given semester to the Downloads folder
-    @IBAction func export(sender: AnyObject) {
+    @IBAction func export(_ sender: AnyObject) {
         
         let str = semester.stringValue + "\n\n" +
                     "Total Prints: " + totalPrints.stringValue + "\n\n" +
@@ -138,10 +138,10 @@ class StatiticsController: NSViewController{
                         colorsString;
         
         
-        let path: NSURL = NSURL(fileURLWithPath: NSHomeDirectory()).URLByAppendingPathComponent("Downloads/" + semester.stringValue + "TechLabData.txt");
+        let path: URL = URL(fileURLWithPath: NSHomeDirectory()).appendingPathComponent("Downloads/" + semester.stringValue + "TechLabData.txt");
     
         do{
-            try str.writeToFile(path.path!, atomically: true, encoding: NSUTF8StringEncoding);
+            try str.write(toFile: path.path, atomically: true, encoding: String.Encoding.utf8);
             
         } catch{
             

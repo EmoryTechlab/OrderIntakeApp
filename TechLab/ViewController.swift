@@ -100,53 +100,53 @@ class ViewController: NSViewController{
     //MARK: - methods for populating the drop down menu buttons on the main window
     //------------------------------------Add Printer List-------------------------------------------------------
     func doAddItemsToPrintList() -> Void{
-        printer.addItemsWithTitles(self.printerList);
+        printer.addItems(withTitles: self.printerList);
     }
     //------------------------------------Add Color List---------------------------------------------------------
     
     func doAddItemsToColorList() -> Void{
-        color.addItemsWithTitles(self.colorList);
+        color.addItems(withTitles: self.colorList);
     }
     //------------------------------------Add Infill List----------------------------------------------------------
     func doAddItemsToInfillList() -> Void{
-        infill.addItemsWithTitles(["10%", "20%", "30%", "40%", "50%", "60%","70%", "80%","90%", "100%"]);
+        infill.addItems(withTitles: ["10%", "20%", "30%", "40%", "50%", "60%","70%", "80%","90%", "100%"]);
     }
     
     //------------------------------------Add Support Option------------------------------------------------------
     func doAddItemsToSupportList() -> Void{
-        supports.addItemsWithTitles(["Yes", "No"]);
+        supports.addItems(withTitles: ["Yes", "No"]);
     }
     
     //------------------------------------Add Raft Option---------------------------------------------------------
     func doAddItemsToRaftList() -> Void{
-        raft.addItemsWithTitles(["Yes", "No"]);
+        raft.addItems(withTitles: ["Yes", "No"]);
     }
     
     //------------------------------------Add Resolution List-----------------------------------------------------
     func doAddItemsToResolutionList() -> Void{
-        resolution.addItemsWithTitles([".3", ".2", ".1", ".05", ".025"]);
+        resolution.addItems(withTitles: [".3", ".2", ".1", ".05", ".025"]);
     }
     //------------------------------------Add Schools List-----------------------------------------------------
     func doAddItemsToSchoolList() -> Void{
-        schoolList.addItemsWithTitles(["Emory College", "Staff", "Oxford College", "Business", "Law", "Medicine", "Nursing", "Public Health", "Theology", "Laney"]);
+        schoolList.addItems(withTitles: ["Emory College", "Staff", "Oxford College", "Business", "Law", "Medicine", "Nursing", "Public Health", "Theology", "Laney"]);
     }
     //------------------------------------Add Purpose List-----------------------------------------------------
     
     func doAddItemsToPurposeList() -> Void{
-        purpose.addItemsWithTitles(["Personal Use","Academic Use"]);
+        purpose.addItems(withTitles: ["Personal Use","Academic Use"]);
     }
     //------------------------------------Add Minutes List-----------------------------------------------------
     
     func doAddItemsToMinutesList()-> Void {
         for i in 0...59{
-            minutes.addItemsWithObjectValues([i]);
+            minutes.addItems(withObjectValues: [i]);
         }
     }
     //------------------------------------Add Hours List-----------------------------------------------------
     
     func doAddItemsToHoursList()-> Void {
         for i in 0...100{
-            hours.addItemsWithObjectValues([i])
+            hours.addItems(withObjectValues: [i])
         }
     }
     //------------------------------------View Did Load-------------------------------------------------------
@@ -178,7 +178,7 @@ class ViewController: NSViewController{
     
     //------------------------------------Clear All Selection------------------------------------------------------
     
-    @IBAction func clearAll(sender: AnyObject) {
+    @IBAction func clearAll(_ sender: AnyObject) {
         
         projectName.stringValue = "";
         name.stringValue = "";
@@ -199,22 +199,22 @@ class ViewController: NSViewController{
         hours.stringValue = "0";
         minutes.stringValue = "0";
         
-        usageLabel.textColor = NSColor.blackColor();
-        timeLabel.textColor = NSColor.blackColor();
-        fileLabel.textColor = NSColor.blackColor();
+        usageLabel.textColor = NSColor.black;
+        timeLabel.textColor = NSColor.black;
+        fileLabel.textColor = NSColor.black;
         
         rightSideTitle.stringValue = "";
         totalNumberOfFiles.stringValue = "";
         totalPrice.stringValue = "";
         totalUsage.stringValue = "";
         
-        fileCol.removeAll(keepCapacity: true);
-        usageCol.removeAll(keepCapacity: false);
-        priceCol.removeAll(keepCapacity: true);
-        timeCol.removeAll(keepCapacity: true);
-        numberArray.removeAll(keepCapacity: true);
-        arrayOfFileLocations.removeAll(keepCapacity: true);
-        allMyInfo.removeAll(keepCapacity: true);
+        fileCol.removeAll(keepingCapacity: true);
+        usageCol.removeAll(keepingCapacity: false);
+        priceCol.removeAll(keepingCapacity: true);
+        timeCol.removeAll(keepingCapacity: true);
+        numberArray.removeAll(keepingCapacity: true);
+        arrayOfFileLocations.removeAll(keepingCapacity: true);
+        allMyInfo.removeAll(keepingCapacity: true);
         
         infoTable.reloadData();
         
@@ -223,18 +223,18 @@ class ViewController: NSViewController{
     
     //------------------------------------Browse For File-------------------------------------------------------
     
-    @IBAction func browse(sender: AnyObject) {
+    @IBAction func browse(_ sender: AnyObject) {
         
         let panel = NSOpenPanel();
         panel.allowsMultipleSelection = false;
         panel.canChooseFiles = true;
         panel.canChooseDirectories = false;
         panel.runModal();
-        var filePath: NSURL?;
+        var filePath: URL?;
         
         
-        if (!panel.URLs.isEmpty){
-            filePath = NSURL(fileURLWithPath: panel.URLs[0].path!)
+        if (!panel.urls.isEmpty){
+            filePath = URL(fileURLWithPath: panel.urls[0].path)
         }
         
         let fileExtenion = filePath?.pathExtension;
@@ -245,14 +245,14 @@ class ViewController: NSViewController{
         var validFileExtension = false;
         
         for key in (self.mainWindow?.printerFileDict.keys)!{
-            if( self.mainWindow?.printerFileDict[key]?.indexOf(fileExtenion!) != nil){
+            if( self.mainWindow?.printerFileDict[key]?.index(of: fileExtenion!) != nil){
                 validFileExtension = true;
                 break;
             }
         }
         if(validFileExtension){
-            fileLocation.stringValue = filePath!.path!// as String;
-            fileLabel.textColor = NSColor.blackColor();
+            fileLocation.stringValue = filePath!.path// as String;
+            fileLabel.textColor = NSColor.black;
         }
         else if (fileExtenion == ""){
             return
@@ -262,7 +262,7 @@ class ViewController: NSViewController{
             let fileExtensionErrorPopUp = NSAlert();
             fileExtensionErrorPopUp.messageText = "\tInvalid file extension error\n\nPlease choose a file with one of the appropriate file extensions for the 3D Printers: \n\nFor Example: \n\n .thing (Makerbot) \n .form (PreFrom) \n .amf   (Cura)"
             fileExtensionErrorPopUp.runModal();
-            fileLabel.textColor = NSColor.redColor();
+            fileLabel.textColor = NSColor.red;
         }
         
         
@@ -270,25 +270,25 @@ class ViewController: NSViewController{
     //------------------------------------Name and NetId Validation-------------------------------------------------------
     
     //Checks whether the user entered their full name, first and last name and a "valid" netId
-    func validateNameandNetId(name: String, netIdString: String)-> (errorExist: Bool, message: String){
+    func validateNameandNetId(_ name: String, netIdString: String)-> (errorExist: Bool, message: String){
         var errorMess = "";
         var hasError = false;
-        let tempName = (name).stringByTrimmingCharactersInSet( NSCharacterSet.whitespaceAndNewlineCharacterSet());
+        let tempName = (name).trimmingCharacters( in: CharacterSet.whitespacesAndNewlines);
         
-        if(!tempName.containsString(" ")){
+        if(!tempName.contains(" ")){
             hasError = true;
-            nameLabel.textColor = NSColor.redColor();
+            nameLabel.textColor = NSColor.red;
             errorMess = "\n\tPlease enter your first and last name: \n\t\t ex: Daenerys Targaryen";
         }else{
-            nameLabel.textColor = NSColor.blackColor();
+            nameLabel.textColor = NSColor.black;
         }
-        if(netIdString.characters.count == 0 || Int(netIdString.substringToIndex(netIdString.startIndex.advancedBy(1))) != nil){
+        if(netIdString.characters.count == 0 || Int(netIdString.substring(to: netIdString.characters.index(netIdString.startIndex, offsetBy: 1))) != nil){
             hasError = true;
             errorMess += "\n\n\t Please enter your NetID: \n\t\t ex: dtarg34";
-            netIdLabel.textColor = NSColor.redColor();
+            netIdLabel.textColor = NSColor.red;
         }
         else{
-            netIdLabel.textColor = NSColor.blackColor();
+            netIdLabel.textColor = NSColor.black;
             
         }
         
@@ -299,20 +299,20 @@ class ViewController: NSViewController{
     //------------------------------------Usage Validation-------------------------------------------------------
     
     //Checks if the user inputted any non numeric inputs in the usage field as well as ensures the user did indeed input something
-    func validateUsage(usageStr: String)->(errorExist: Bool, message: String){
+    func validateUsage(_ usageStr: String)->(errorExist: Bool, message: String){
         var hasError = false;
         var errorMess = "";
         for char in usageStr.characters{
             //If the character is not a number or a decimal point, an error message will be generated.
             if(  (char >= "\u{30}" && char <= "\u{39}") || char == "\u{2E}"){
-                usageLabel.textColor = NSColor.blackColor();
+                usageLabel.textColor = NSColor.black;
                 continue;
             }
             else{
                 hasError = true;
                 errorMess = "--> Please enter only numbers or decimals into the usage section.";
                 usage.stringValue = "";
-                usageLabel.textColor = NSColor.redColor();
+                usageLabel.textColor = NSColor.red;
                 break;
             }
             
@@ -321,7 +321,7 @@ class ViewController: NSViewController{
         if(usageStr.isEmpty){
             hasError = true;
             errorMess = "--> Please input the estimated material usage.";
-            usageLabel.textColor = NSColor.redColor();
+            usageLabel.textColor = NSColor.red;
         }
         
         return(hasError, errorMess);
@@ -331,7 +331,7 @@ class ViewController: NSViewController{
     //------------------------------------Time Validation-------------------------------------------------------
     
     //Checks if the user inputted any non numeric inputs in the time field as well as ensures the user did indeed input something
-    func validateTime(hrs: String, min: String)->(errorExist: Bool, message: String){
+    func validateTime(_ hrs: String, min: String)->(errorExist: Bool, message: String){
         var hasError = false;
         var errorMess = "";
         
@@ -340,7 +340,7 @@ class ViewController: NSViewController{
         //If the user entered a non numeric number
         for char in hoursAndMinutes.characters{
                 if( char >= "\u{30}" && char <= "\u{39}"){
-                timeLabel.textColor = NSColor.blackColor();
+                timeLabel.textColor = NSColor.black;
                 continue;
             }
             else{
@@ -348,7 +348,7 @@ class ViewController: NSViewController{
                 errorMess = "--> Please enter only numbers in the time section.";
                 hours.stringValue = "0";
                 minutes.stringValue = "0";
-                timeLabel.textColor = NSColor.redColor();
+                timeLabel.textColor = NSColor.red;
                 break;
             }
         }
@@ -356,7 +356,7 @@ class ViewController: NSViewController{
         //If the user entered 0 hours and 00 minutes
         if( Int(hoursAndMinutes) == 0){
             hasError = true;
-            timeLabel.textColor = NSColor.redColor();
+            timeLabel.textColor = NSColor.red;
             errorMess = "--> The time of the print cannot be 0:00.";
             
         }
@@ -368,7 +368,7 @@ class ViewController: NSViewController{
             errorMess = "--> Please enter the estimated time of the print.";
             hours.stringValue = "0";
             minutes.stringValue = "0";
-            timeLabel.textColor = NSColor.redColor();
+            timeLabel.textColor = NSColor.red;
         }
         
         return(hasError, errorMess);
@@ -378,21 +378,21 @@ class ViewController: NSViewController{
     //------------------------------------File Exist Validation-------------------------------------------------------
     
     //Checks whether a file exists at the given inputted path
-    func validateFile(filePath: String)->(errorExist: Bool, messgae: String){
+    func validateFile(_ filePath: String)->(errorExist: Bool, messgae: String){
         var hasError = false;
         var errorMess = "";
         
-        let manager: NSFileManager = NSFileManager.defaultManager();
+        let manager: FileManager = FileManager.default;
         
         //If the user did not enter or a file or entered an invalide file path, the error message will be generated
-        if( (fileLocationSelection == "") || !(manager.fileExistsAtPath(fileLocationSelection as String))){
+        if( (fileLocationSelection == "") || !(manager.fileExists(atPath: fileLocationSelection as String))){
             hasError = true;
             errorMess = "--> Please choose or enter a valid file.";
             fileLocation.stringValue = "";
-            fileLabel.textColor = NSColor.redColor();
+            fileLabel.textColor = NSColor.red;
         }
         else{
-            fileLabel.textColor = NSColor.blackColor();
+            fileLabel.textColor = NSColor.black;
         }
     
         return(hasError, errorMess);
@@ -401,7 +401,7 @@ class ViewController: NSViewController{
     //------------------------------------Printer and File Type Match Validation-------------------------------------------------------
     
     //Checks whether the choosen file matches its corresponding printer
-    func validatePrinterFileMatch(filePath: NSString, printer: String)->(errorExist: Bool, message: String){
+    func validatePrinterFileMatch(_ filePath: NSString, printer: String)->(errorExist: Bool, message: String){
         
         var hasError = false;
         var errorMess = "";
@@ -409,11 +409,11 @@ class ViewController: NSViewController{
         let fileExtension = filePath.pathExtension;
         
         
-        if( printerFileDict[printer]?.indexOf(fileExtension) == nil ) {
+        if( printerFileDict[printer]?.index(of: fileExtension) == nil ) {
             hasError = true;
-            errorMess = "\t\t\t\t😱 \n\t \tPrinter and File Mismatch Error\n\nPlease make sure the file being loaded corressponds to the correct printer: \n\nFor Example:\nn .thing (Replicator) \n .form (Form1+) \n .amf   (TAZ)";
-            printerLabel.textColor = NSColor.redColor();
-            fileLabel.textColor = NSColor.redColor();
+            errorMess = "\t\t\t\t😱 \n\t \tPrinter and File Mismatch Error\n\nPlease make sure the file being loaded corresponds to the correct printer: \n\nFor Example:\n .thing (Replicator) \n .form (Form1+) \n .amf   (TAZ)";
+            printerLabel.textColor = NSColor.red;
+            fileLabel.textColor = NSColor.red;
         }
 
         
@@ -424,7 +424,7 @@ class ViewController: NSViewController{
     
     //------------------------------------Add-------------------------------------------------------
     //gathers all the user entered information
-    @IBAction func addFile(sender: AnyObject) {
+    @IBAction func addFile(_ sender: AnyObject) {
         
         printerSelection = printer.titleOfSelectedItem!;
         nameSelection = name.stringValue;
@@ -440,14 +440,14 @@ class ViewController: NSViewController{
         
         projectNameSelection = projectName.stringValue;
         phoneNumberSelection = phoneNumber.stringValue;
-        fileLocationSelection = fileLocation.stringValue;
+        fileLocationSelection = fileLocation.stringValue as NSString;
         purposeSelection = purpose.titleOfSelectedItem!;
         
         
-        let today: NSDate = NSDate();
-        let dateFormat: NSDateFormatter = NSDateFormatter();
+        let today: Date = Date();
+        let dateFormat: DateFormatter = DateFormatter();
         dateFormat.setLocalizedDateFormatFromTemplate("MM/dd/yyyy");
-        dateString = dateFormat.stringFromDate(today);
+        dateString = dateFormat.string(from: today);
  
         
         if ( (projectNameSelection as String).characters.count == 0) {
@@ -532,17 +532,17 @@ class ViewController: NSViewController{
             return;
         }
         
-        usageLabel.textColor = NSColor.blackColor();
-        timeLabel.textColor = NSColor.blackColor();
-        fileLabel.textColor = NSColor.blackColor();
-        printerLabel.textColor = NSColor.blackColor();
+        usageLabel.textColor = NSColor.black;
+        timeLabel.textColor = NSColor.black;
+        fileLabel.textColor = NSColor.black;
+        printerLabel.textColor = NSColor.black;
         
         let temp = " Name: \(nameSelection) \n Phone number: \(phoneNumberSelection) \n Date: \(dateString) \n NetID: \(netIdSelection) \n School: \(schoolSelection) \n \n Printer Type: \(printerSelection) \n Color Preference: \(colorSelection) \n Infill Preference: \(infillSelection) \n Supports: \(supportSelection) \n Raft: \(raftSelection) \n Resolution: \(resolutionSelection) \n \n Estimated Material Usage: \((usageSelection as String) + getUsageUnits()) \n Estimated Time to print: \(timeSelection) \n \n What is this for: \(purposeSelection)";
         
         
         allMyInfo.append(temp);
         rightSideTitle.stringValue = projectNameSelection as String;
-        printFileName = fileLocationSelection.lastPathComponent;
+        printFileName = fileLocationSelection.lastPathComponent as NSString;
         
         fileCol.append(printFileName as String);
         arrayOfFileLocations.append(fileLocationSelection as String);
@@ -565,7 +565,7 @@ class ViewController: NSViewController{
         
         //Insert new row in the table view
         let newRowIndex = self.fileCol.count - 1;
-        self.infoTable.insertRowsAtIndexes(NSIndexSet(index: newRowIndex), withAnimation: NSTableViewAnimationOptions());
+        self.infoTable.insertRows(at: IndexSet(integer: newRowIndex), withAnimation: NSTableViewAnimationOptions());
         
         
         //Clears the necesseary text fields and drop down menu items so that the user may add another file to the project
@@ -586,21 +586,21 @@ class ViewController: NSViewController{
         
     }
     //------------------------------------Remove File-------------------------------------------------------
-    @IBAction func removeSelectedFile(sender: AnyObject) {
+    @IBAction func removeSelectedFile(_ sender: AnyObject) {
         
         
         let indexOfObjectToRemove = self.infoTable.selectedRow;
         if(indexOfObjectToRemove >= 0 && indexOfObjectToRemove < fileCol.count){
             
-            fileCol.removeAtIndex(indexOfObjectToRemove);
-            usageCol.removeAtIndex(indexOfObjectToRemove);
-            priceCol.removeAtIndex(indexOfObjectToRemove);
-            timeCol.removeAtIndex(indexOfObjectToRemove);
-            numberArray.removeAtIndex(indexOfObjectToRemove);
-            arrayOfFileLocations.removeAtIndex(indexOfObjectToRemove);
-            allMyInfo.removeAtIndex(indexOfObjectToRemove);
+            fileCol.remove(at: indexOfObjectToRemove);
+            usageCol.remove(at: indexOfObjectToRemove);
+            priceCol.remove(at: indexOfObjectToRemove);
+            timeCol.remove(at: indexOfObjectToRemove);
+            numberArray.remove(at: indexOfObjectToRemove);
+            arrayOfFileLocations.remove(at: indexOfObjectToRemove);
+            allMyInfo.remove(at: indexOfObjectToRemove);
             
-            infoTable.removeRowsAtIndexes(NSIndexSet(index: indexOfObjectToRemove), withAnimation: NSTableViewAnimationOptions());
+            infoTable.removeRows(at: IndexSet(integer: indexOfObjectToRemove), withAnimation: NSTableViewAnimationOptions());
          
             updateVerificationInfo();
             
@@ -609,7 +609,7 @@ class ViewController: NSViewController{
     }
     
     //------------------------------------Duplicate File-------------------------------------------------------
-    @IBAction func duplicateSelectedFile(sender: AnyObject) {
+    @IBAction func duplicateSelectedFile(_ sender: AnyObject) {
         
         let indexOfObjectToDuplicate = self.infoTable.selectedRow;
         
@@ -624,7 +624,7 @@ class ViewController: NSViewController{
             allMyInfo.append(allMyInfo[indexOfObjectToDuplicate]);
             
             let newRowIndex = self.fileCol.count - 1;
-            infoTable.insertRowsAtIndexes(NSIndexSet(index: newRowIndex), withAnimation: NSTableViewAnimationOptions());
+            infoTable.insertRows(at: IndexSet(integer: newRowIndex), withAnimation: NSTableViewAnimationOptions());
             
             updateVerificationInfo();
             
@@ -664,14 +664,14 @@ class ViewController: NSViewController{
     }
     //------------------------------------Usage Units-------------------------------------------------------
     //Logic that determines whether the user selected grams of milliliters as their usage type
-    @IBAction func gramUsage(sender: AnyObject) {
+    @IBAction func gramUsage(_ sender: AnyObject) {
         
         gramSelection = true;
         mLSelection = false;
         usageType = "g";
         
     }
-    @IBAction func mLUsage(sender: AnyObject) {
+    @IBAction func mLUsage(_ sender: AnyObject) {
         
         mLSelection = true;
         gramSelection = false;
@@ -693,13 +693,13 @@ class ViewController: NSViewController{
     //calculates the price of the print job based on the amount of material used
     func calculatePrice() -> Int{
         
-        let temp_usageSelection:NSString = usageSelection;
+        let temp_usageSelection:NSString = usageSelection as NSString;
         let temp_price = temp_usageSelection.doubleValue;
         
         var temp_number = 0;
         
         if (gramSelection && !mLSelection){
-            if(temp_price % 100 == 0){
+            if(temp_price.truncatingRemainder(dividingBy: 100) == 0){
                 temp_number =  2 *  Int(temp_price/100);
             }
             else{
@@ -708,7 +708,7 @@ class ViewController: NSViewController{
             }
         }
         else{
-            if(temp_price % 100 == 0){
+            if(temp_price.truncatingRemainder(dividingBy: 100) == 0){
                 temp_number =  4 *  Int(temp_price/100);
             }
             else{
@@ -725,15 +725,15 @@ class ViewController: NSViewController{
     
     //------------------------------------Continue--------------------------------------------------
     
-    @IBAction func continueToPackageWindow(sender: AnyObject) {
+    @IBAction func continueToPackageWindow(_ sender: AnyObject) {
         
       
         
-        self.performSegueWithIdentifier("PackageSegue", sender: sender)
+        self.performSegue(withIdentifier: "PackageSegue", sender: sender)
         
         
     }
-    override func shouldPerformSegueWithIdentifier(identifier: String, sender: AnyObject?) -> Bool {
+    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
         if(arrayOfFileLocations.count == 0){
             let notification = NSAlert();
             notification.accessoryView = NSView.init(frame: NSRect(x: 0, y: 0, width: 350, height: 0));
@@ -751,9 +751,9 @@ class ViewController: NSViewController{
     }
     //------------------------------------Segue------------------------------------------------------
     
-    override func prepareForSegue(segue: NSStoryboardSegue, sender: AnyObject?) ->  Void {
+    override func prepare(for segue: NSStoryboardSegue, sender: Any?) ->  Void {
         
-        shouldPerformSegueWithIdentifier("PackageSegue", sender: self);
+        shouldPerformSegue(withIdentifier: "PackageSegue", sender: self);
         
         
         let secondWindow: ViewController1 = segue.destinationController as! ViewController1;
@@ -765,11 +765,11 @@ class ViewController: NSViewController{
         secondWindow.arrayOfFileLocations = arrayOfFileLocations;
         secondWindow.arrayOfEstTimes = timeCol;
         
-        secondWindow.netId = netIdSelection;
-        secondWindow.projectName = projectNameSelection;
-        secondWindow.name = nameSelection;
-        secondWindow.dateString = dateString;
-        secondWindow.estTime = timeSelection;
+        secondWindow.netId = netIdSelection as NSString;
+        secondWindow.projectName = projectNameSelection as NSString;
+        secondWindow.name = nameSelection as NSString;
+        secondWindow.dateString = dateString as NSString;
+        secondWindow.estTime = timeSelection as NSString;
         
         secondWindow.previousWindow = self;
         
@@ -788,8 +788,8 @@ class ViewController: NSViewController{
             else{
                 end = 2;
             }
-            let type = str.substringFromIndex(str.length-end);
-            let value = Double(str.substringToIndex(str.length-end));
+            let type = str.substring(from: str.length-end);
+            let value = Double(str.substring(to: str.length-end));
 
             x.setMaterialValue(value!);
             x.setTypeOfMaterial(type);
@@ -819,7 +819,7 @@ extension ViewController: NSTableViewDataSource{
     
     //------------------------------------Number of rows in table view-------------------------------------------------------
     
-    func numberOfRowsInTableView(tableView: NSTableView) -> Int {
+    func numberOfRows(in tableView: NSTableView) -> Int {
         
         return self.fileCol.count
         
@@ -827,10 +827,10 @@ extension ViewController: NSTableViewDataSource{
     
     //------------------------------------Table View-------------------------------------------------------
     
-    func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
+    func tableView(_ tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
         
         
-        let view: NSTableCellView = tableView.makeViewWithIdentifier(tableColumn!.identifier, owner: self) as! NSTableCellView
+        let view: NSTableCellView = tableView.make(withIdentifier: tableColumn!.identifier, owner: self) as! NSTableCellView
         
         
         //Inserting the file name in the file name column

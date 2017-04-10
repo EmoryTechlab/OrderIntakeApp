@@ -31,7 +31,7 @@ class SettingsTabController: NSTabViewController {
 
 class SemesterTab: NSViewController{
     
-    var mainVC: MainViewController? = NSApplication.sharedApplication().mainWindow?.contentViewController as? MainViewController;
+    var mainVC: MainViewController? = NSApplication.shared().mainWindow?.contentViewController as? MainViewController;
 
     @IBOutlet weak var seasonButton: NSPopUpButton!
     @IBOutlet weak var yearButton: NSPopUpButton!
@@ -50,33 +50,33 @@ class SemesterTab: NSViewController{
     //------------------------------------Add Season List-------------------------------------------------------
     func addItemsToSeasonList() -> Void {
         
-        seasonButton.addItemsWithTitles(["Fall", "Spring", "Summer"]);
+        seasonButton.addItems(withTitles: ["Fall", "Spring", "Summer"]);
         
     }
     
     //------------------------------------Add Year List-------------------------------------------------------
     func addItemsToYearList() -> Void{
         
-        let today: NSDate = NSDate();
-        let dateFormat: NSDateFormatter = NSDateFormatter();
+        let today: Date = Date();
+        let dateFormat: DateFormatter = DateFormatter();
         dateFormat.setLocalizedDateFormatFromTemplate("MM/dd/yyyy");
-        let dateString = dateFormat.stringFromDate(today);
-        let year = Int(dateString.componentsSeparatedByString("/")[2]);
+        let dateString = dateFormat.string(from: today);
+        let year = Int(dateString.components(separatedBy: "/")[2]);
         
         let incr = 2;
         let lowerLimit = year! - incr;
         let upperLimit = year! + incr;
         
-        yearButton.addItemWithTitle(String(year!));
+        yearButton.addItem(withTitle: String(year!));
         for i in lowerLimit...upperLimit {
-            yearButton.addItemWithTitle(String(i));
+            yearButton.addItem(withTitle: String(i));
         }
         
     }
     
     //------------------------------------Send Updated Values-------------------------------------------------------
     //updates the semester string in the main controller so that updates from settings view correctly propagate
-    @IBAction func changeSemester(sender: AnyObject) {
+    @IBAction func changeSemester(_ sender: AnyObject) {
         
         seasonStr = seasonButton.titleOfSelectedItem!;
         yearStr = yearButton.titleOfSelectedItem!;
@@ -97,7 +97,7 @@ class SemesterTab: NSViewController{
 
 class ColorTab: NSViewController{
     
-    var mainVC: MainViewController? = NSApplication.sharedApplication().mainWindow?.contentViewController as? MainViewController;
+    var mainVC: MainViewController? = NSApplication.shared().mainWindow?.contentViewController as? MainViewController;
     var colors = [String]();
     
     @IBOutlet weak var colorInput: NSTextField!
@@ -113,14 +113,15 @@ class ColorTab: NSViewController{
     
     //---------------------------------Add Initial Values-------------------------------------------------------
     func addInitialColorsToList() -> Void{
-        colorList.editable = true;
+        colorList.isEditable = true;
         colors = mainVC!.colorList;
-        colorList.insertText(colors.joinWithSeparator("\n"));
-        colorList.editable = false;
+        //colorList.insertText(colors.joined(separator: "\n"));
+        colorList.insertText(colors.joined(separator: "\n"), replacementRange: NSRange());
+        colorList.isEditable = false;
         
     }
     //------------------------------------Validate Input-------------------------------------------------------
-    func validateInput(input:String)->Bool{
+    func validateInput(_ input:String)->Bool{
         var valid = true;
         
         //if empty
@@ -128,7 +129,7 @@ class ColorTab: NSViewController{
             valid = false;
         }
         //deals with the case of a bunch of spaces
-        if(input.stringByReplacingOccurrencesOfString(" ", withString: "", options: NSStringCompareOptions(), range: nil).characters.count == 0){
+        if(input.replacingOccurrences(of: " ", with: "", options: NSString.CompareOptions(), range: nil).characters.count == 0){
             valid = false;
         }
         
@@ -136,9 +137,9 @@ class ColorTab: NSViewController{
         return valid;
     }
     //------------------------------------Add Color-------------------------------------------------------
-    @IBAction func addColor(sender: AnyObject) {
+    @IBAction func addColor(_ sender: AnyObject) {
         
-        let colorToAdd = colorInput.stringValue.lowercaseString.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet());
+        let colorToAdd = colorInput.stringValue.lowercased().trimmingCharacters(in: CharacterSet.whitespaces);
         
         if(!validateInput(colorToAdd)){ //if invalid input
             colorInput.stringValue = "";
@@ -149,13 +150,13 @@ class ColorTab: NSViewController{
             colorErrorLabel.stringValue = colorToAdd + "\n already exists!"
         }
         else{ //else add colors
-            colorList.editable = true;
+            colorList.isEditable = true;
             
             colors.append(colorToAdd);
-            colorList.insertText("\n"+colorToAdd);
+            colorList.insertText(colorToAdd + "\n", replacementRange: NSRange());
             colorErrorLabel.stringValue = "";
             
-            colorList.editable = false;
+            colorList.isEditable = false;
             
             self.sendUpdatedValues();
         }
@@ -163,9 +164,9 @@ class ColorTab: NSViewController{
         colorInput.stringValue = "";
     }
     //------------------------------------Delete Color-------------------------------------------------------
-    @IBAction func deleteColor(sender: AnyObject) {
+    @IBAction func deleteColor(_ sender: AnyObject) {
         
-        let colorToDel = colorInput.stringValue.lowercaseString.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet());
+        let colorToDel = colorInput.stringValue.lowercased().trimmingCharacters(in: CharacterSet.whitespaces);
         
         if(!validateInput(colorToDel)){ //if invalid input
             colorInput.stringValue = "";
@@ -174,14 +175,14 @@ class ColorTab: NSViewController{
         
         
         if( colors.contains(colorToDel)){ //delete color
-            colorList.editable = true;
+            colorList.isEditable = true;
             
-            colors.removeAtIndex(colors.indexOf(colorToDel)!);
+            colors.remove(at: colors.index(of: colorToDel)!);
             colorList.string = "";
-            colorList.insertText(colors.joinWithSeparator("\n"));
+            colorList.insertText(colors.joined(separator: "\n"), replacementRange: NSRange());
             colorErrorLabel.stringValue = "";
             
-            colorList.editable = false;
+            colorList.isEditable = false;
             
             self.sendUpdatedValues();
         }
@@ -206,7 +207,7 @@ class ColorTab: NSViewController{
 
 class PrinterTab: NSViewController{
     
-    var mainVC: MainViewController? = NSApplication.sharedApplication().mainWindow?.contentViewController as? MainViewController;
+    var mainVC: MainViewController? = NSApplication.shared().mainWindow?.contentViewController as? MainViewController;
     var printers = [String]();
     var printerFileDict = [String: [String]]();
     
@@ -224,22 +225,22 @@ class PrinterTab: NSViewController{
     //------------------------------------Add Initial Printers and File Extensions-------------------------------------------------------
     func addInitialPrintersToList() -> Void{
         
-        printerList.editable = true;
+        printerList.isEditable = true;
         printers = mainVC!.printerList;
-        printerList.insertText(printers.joinWithSeparator("\n"));
-        printerList.editable = false;
+        printerList.insertText(printers.joined(separator: "\n"), replacementRange: NSRange());
+        printerList.isEditable = false;
         
         printerFileDict = mainVC!.printerFileDict;
     }
     
     //------------------------------------Validate Input-------------------------------------------------------
-    func validateInput(input:String)->Bool{
+    func validateInput(_ input:String)->Bool{
         var valid = true;
         
         if(input.characters.count == 0){
             valid = false;
         }
-        if(input.stringByReplacingOccurrencesOfString(" ", withString: "", options: NSStringCompareOptions(), range: nil).characters.count == 0){
+        if(input.replacingOccurrences(of: " ", with: "", options: NSString.CompareOptions(), range: nil).characters.count == 0){
             valid = false;
         }
         
@@ -249,9 +250,9 @@ class PrinterTab: NSViewController{
     
     //------------------------------------Add/Delete For Printers-------------------------------------------------------
     //------------Add
-    @IBAction func addPrinter(sender: AnyObject) {
+    @IBAction func addPrinter(_ sender: AnyObject) {
         
-        let printerToAdd = printerInput.stringValue.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet());
+        let printerToAdd = printerInput.stringValue.trimmingCharacters(in: CharacterSet.whitespaces);
         
         if(!validateInput(printerToAdd)){ //if invalid input
             printerInput.stringValue = "";
@@ -259,11 +260,11 @@ class PrinterTab: NSViewController{
         }
         
         
-        let testStr = printerToAdd.lowercaseString;
+        let testStr = printerToAdd.lowercased();
         
         var found = false;
         for item in printers{
-            if(item.lowercaseString == testStr){
+            if(item.lowercased() == testStr){
                 found = true;
                 break;
             }
@@ -279,11 +280,11 @@ class PrinterTab: NSViewController{
                     printerFileDict[printerToAdd]?.append(item);
                 }
                 
-                printerList.editable = true;
+                printerList.isEditable = true;
                 printers.append(printerToAdd);
-                printerList.insertText("\n"+printerToAdd);
+                printerList.insertText(printerToAdd + "\n", replacementRange: NSRange());
                 printerErrorLabel.stringValue = "";
-                printerList.editable = false;
+                printerList.isEditable = false;
                 
                 self.sendUpdatedValues();
             }
@@ -297,11 +298,11 @@ class PrinterTab: NSViewController{
     }
     
     //--------Add file type(s) for printer
-    func addFileTypeForPrinter(printerName: String) -> (fileExtentions: [String], hasError:Bool){
+    func addFileTypeForPrinter(_ printerName: String) -> (fileExtentions: [String], hasError:Bool){
         
         let msg = NSAlert()
-        msg.addButtonWithTitle("OK")      // 1st button
-        msg.addButtonWithTitle("Cancel")  // 2nd button
+        msg.addButton(withTitle: "OK")      // 1st button
+        msg.addButton(withTitle: "Cancel")  // 2nd button
         msg.messageText = "Enter the compatible file extension(s) for the " + printerName;
         msg.informativeText = "You may enter multiple extentions separated by commas.";
         
@@ -314,7 +315,7 @@ class PrinterTab: NSViewController{
         if (response == NSAlertFirstButtonReturn) {
             let valid = validateInput(extInput.stringValue);
             if(valid){
-                var arrOfExtensions = extInput.stringValue.componentsSeparatedByString(",");
+                var arrOfExtensions = extInput.stringValue.components(separatedBy: ",");
                 for i in 0...arrOfExtensions.count-1{
                     arrOfExtensions[i] = formatStringInput(arrOfExtensions[i])
                 }
@@ -329,31 +330,31 @@ class PrinterTab: NSViewController{
     }
     
     //---Helper function that strips spaces and punctuations from user input incase the user typed .amf instead of just amf for file extension
-    func formatStringInput(input: String) -> String {
+    func formatStringInput(_ input: String) -> String {
         
         var cleanInput = input;
-        cleanInput = cleanInput.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet());
-        cleanInput = cleanInput.stringByTrimmingCharactersInSet(NSCharacterSet.punctuationCharacterSet());
+        cleanInput = cleanInput.trimmingCharacters(in: CharacterSet.whitespaces);
+        cleanInput = cleanInput.trimmingCharacters(in: CharacterSet.punctuationCharacters);
         
         return cleanInput
         
     }
     //---Delete
-    @IBAction func deletePrinter(sender: AnyObject) {
+    @IBAction func deletePrinter(_ sender: AnyObject) {
         
-        let printerToDel = printerInput.stringValue.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet());
+        let printerToDel = printerInput.stringValue.trimmingCharacters(in: CharacterSet.whitespaces);
         if(!validateInput(printerToDel)){
             printerInput.stringValue = "";
             return;
         }
         
-        let testStr = printerToDel.lowercaseString;
+        let testStr = printerToDel.lowercased();
         var index = 0;
         
         var found = false;
         for item in printers{
-            if(item.lowercaseString == testStr){
-                index = printers.indexOf(item)!;
+            if(item.lowercased() == testStr){
+                index = printers.index(of: item)!;
                 
                 found = true;
                 break;
@@ -361,17 +362,17 @@ class PrinterTab: NSViewController{
         }
         
         if(found){
-            printerList.editable = true;
+            printerList.isEditable = true;
             
-            printers.removeAtIndex(index);
+            printers.remove(at: index);
             printerList.string = "";
-            printerList.insertText(printers.joinWithSeparator("\n"));
+            printerList.insertText(printers.joined(separator: "\n"), replacementRange: NSRange());
             printerErrorLabel.stringValue = "";
             
-            printerList.editable = false;
+            printerList.isEditable = false;
             
             
-            printerFileDict.removeValueForKey(printerToDel);
+            printerFileDict.removeValue(forKey: printerToDel);
             self.sendUpdatedValues();
             
         }

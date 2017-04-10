@@ -45,25 +45,25 @@ class PrintOrder: NSObject {
     
     
     ///-----Set Functions
-    func setOrderNumber(input: Int) -> Void{
+    func setOrderNumber(_ input: Int) -> Void{
         self.orderNumber = input;
     }
     
-    func setfile(input: String)-> Void {
+    func setfile(_ input: String)-> Void {
         self.file = input;
     }
-    func setMaterialValue( input: Double) -> Void{
+    func setMaterialValue( _ input: Double) -> Void{
         self.materialValue = input;
     }
     
-    func setTypeOfMaterial( input: String) -> Void{
+    func setTypeOfMaterial( _ input: String) -> Void{
         self.materialType = input;
         
     }
-    func setColorOfMaterial( input: String) -> Void{
+    func setColorOfMaterial( _ input: String) -> Void{
         self.materialColor = input;
     }
-    func setSchoolAssocation( input: String) -> Void{
+    func setSchoolAssocation( _ input: String) -> Void{
         self.schoolAssociation = input;
     }
     
@@ -81,19 +81,19 @@ class PrintOrder: NSObject {
         self.emailSent = !self.emailSent;
     }
     
-    func updateMaterial(input: String) -> Void{
+    func updateMaterial(_ input: String) -> Void{
         self.material = input;
     }
     
-    func updateTime( input: String) -> Void{
+    func updateTime( _ input: String) -> Void{
         self.time = input;
     }
     
-    func updatePrice( input: String) -> Void{
+    func updatePrice( _ input: String) -> Void{
         self.price = input;
     }
     
-    func updateLocation( input: String) -> Void{
+    func updateLocation( _ input: String) -> Void{
         self.location = input;
     }
     

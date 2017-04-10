@@ -8,6 +8,35 @@
 
 import Cocoa
 import Foundation
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+fileprivate func >= <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l >= r
+  default:
+    return !(lhs < rhs)
+  }
+}
+
+fileprivate func <= <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l <= r
+  default:
+    return !(rhs < lhs)
+  }
+}
+
 
 
 class MainViewController: NSViewController {
@@ -32,9 +61,9 @@ class MainViewController: NSViewController {
 
     //------------------------------------Add Print Job Order------------------------------------------------------
 
-    @IBAction func addOrder(sender: AnyObject) {
+    @IBAction func addOrder(_ sender: AnyObject) {
         
-        self.performSegueWithIdentifier("addOrderSegue", sender: sender);
+        self.performSegue(withIdentifier: "addOrderSegue", sender: sender);
         
         
     }
@@ -42,7 +71,7 @@ class MainViewController: NSViewController {
     
     //------------------------------------Add Order Segue------------------------------------------------------
 
-    override func prepareForSegue(segue: NSStoryboardSegue, sender: AnyObject?) ->  Void {
+    override func prepare(for segue: NSStoryboardSegue, sender: Any?) ->  Void {
         let infoWindow: ViewController = segue.destinationController as! ViewController;
         
         infoWindow.printOrderArray = self.printOrderArray;
@@ -54,12 +83,12 @@ class MainViewController: NSViewController {
     //Logic that gets the current date and finds the corresponding current semester
     func initSemester() -> Void {
         
-        let today: NSDate = NSDate();
-        let dateFormat: NSDateFormatter = NSDateFormatter();
+        let today: Date = Date();
+        let dateFormat: DateFormatter = DateFormatter();
         dateFormat.setLocalizedDateFormatFromTemplate("MM/dd/yyyy");
-        let dateString = dateFormat.stringFromDate(today);
+        let dateString = dateFormat.string(from: today);
         
-        var temp = dateString.componentsSeparatedByString("/");
+        var temp = dateString.components(separatedBy: "/");
         let month: String = temp[0];
         let day: String = temp[1];
         let year: String = temp[2];
@@ -108,7 +137,7 @@ extension MainViewController: NSTableViewDataSource{
     
     //------------------------------------Number of rows in table view-------------------------------------------------------
     
-    func numberOfRowsInTableView(tableView: NSTableView) -> Int {
+    func numberOfRows(in tableView: NSTableView) -> Int {
 
         return printOrderArray.count;
         
@@ -116,10 +145,10 @@ extension MainViewController: NSTableViewDataSource{
 
     //------------------------------------Table View-------------------------------------------------------
     
-    func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
+    func tableView(_ tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
         
         
-        let view: NSTableCellView = tableView.makeViewWithIdentifier(tableColumn!.identifier, owner: self) as! NSTableCellView
+        let view: NSTableCellView = tableView.make(withIdentifier: tableColumn!.identifier, owner: self) as! NSTableCellView
         
        //Inserting the print order data into the main view table
         let x = printOrderArray[row];

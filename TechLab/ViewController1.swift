@@ -8,6 +8,26 @@
 
 import Foundation
 import Cocoa
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
 
 class ViewController1: NSViewController{
     
@@ -39,7 +59,7 @@ class ViewController1: NSViewController{
     override func viewDidLoad() {
         
         super.viewDidLoad();
-        previousWindow?.dismissController(self);
+        previousWindow?.dismiss(self);
 
         
     }
@@ -47,26 +67,26 @@ class ViewController1: NSViewController{
     //------------------------------------Clear All Instance Arrays------------------------------------------
     
     func clearAllInstanceArrays() -> Void{
-        self.allMyInfo.removeAll(keepCapacity: true);
-        self.arrayOfFileLocations.removeAll(keepCapacity: true);
-        self.arrayOfFileNames.removeAll(keepCapacity: true);
-        self.arrayOfPrices.removeAll(keepCapacity: true);
-        self.arrayOfUsages.removeAll(keepCapacity: true);
-        self.arrayOfEstTimes.removeAll(keepCapacity: true);
+        self.allMyInfo.removeAll(keepingCapacity: true);
+        self.arrayOfFileLocations.removeAll(keepingCapacity: true);
+        self.arrayOfFileNames.removeAll(keepingCapacity: true);
+        self.arrayOfPrices.removeAll(keepingCapacity: true);
+        self.arrayOfUsages.removeAll(keepingCapacity: true);
+        self.arrayOfEstTimes.removeAll(keepingCapacity: true);
         
     }
     
     //------------------------------------Package------------------------------------------------------
     
-    @IBAction func package(sender: AnyObject) {
+    @IBAction func package(_ sender: AnyObject) {
         
       
         // Build our various save paths and folders necessary to do such
-        let desktopDirectory: NSURL = NSURL(fileURLWithPath: NSHomeDirectory()).URLByAppendingPathComponent("Desktop/" + (mainWindow?.semester)! + " Projects");
-        let netIdDirectory: NSURL  = desktopDirectory.URLByAppendingPathComponent(netId as String);
-        let projectDirectory: NSURL = netIdDirectory.URLByAppendingPathComponent(projectName as String);
-        let originalFilesDirectory: NSURL = projectDirectory.URLByAppendingPathComponent("File Repository");
-        let fileSpecsDirectory: NSURL = projectDirectory.URLByAppendingPathComponent("File Specs");
+        let desktopDirectory: URL = URL(fileURLWithPath: NSHomeDirectory()).appendingPathComponent("Desktop/" + (mainWindow?.semester)! + " Projects");
+        let netIdDirectory: URL  = desktopDirectory.appendingPathComponent(netId as String);
+        let projectDirectory: URL = netIdDirectory.appendingPathComponent(projectName as String);
+        let originalFilesDirectory: URL = projectDirectory.appendingPathComponent("File Repository");
+        let fileSpecsDirectory: URL = projectDirectory.appendingPathComponent("File Specs");
         
         //create the folder and filepath for our project
         var arrayOfFileSpecs = [String]();
@@ -79,21 +99,21 @@ class ViewController1: NSViewController{
             
         }
         
-        var filePath = [NSURL]();
+        var filePath = [URL]();
         for item in arrayOfFileSpecs{
             
-            filePath.append(fileSpecsDirectory.URLByAppendingPathComponent(item));
+            filePath.append(fileSpecsDirectory.appendingPathComponent(item));
             
         }
         
         
         //create the folder structure necessary
-        let manager: NSFileManager = NSFileManager.defaultManager();
+        let manager: FileManager = FileManager.default;
         
-        if( !(manager.fileExistsAtPath(netIdDirectory.path!)) ){
+        if( !(manager.fileExists(atPath: netIdDirectory.path)) ){
             
             do{
-                try manager.createDirectoryAtURL(netIdDirectory, withIntermediateDirectories: true, attributes: nil);
+                try manager.createDirectory(at: netIdDirectory, withIntermediateDirectories: true, attributes: nil);
                 
             } catch {
                 
@@ -101,9 +121,9 @@ class ViewController1: NSViewController{
         }
         
         //create project folder
-        if( !(manager.fileExistsAtPath(projectDirectory.path!)) ){
+        if( !(manager.fileExists(atPath: projectDirectory.path)) ){
             do{
-                try manager.createDirectoryAtURL(projectDirectory, withIntermediateDirectories: true, attributes: nil);
+                try manager.createDirectory(at: projectDirectory, withIntermediateDirectories: true, attributes: nil);
                 
                 
             } catch{
@@ -115,9 +135,9 @@ class ViewController1: NSViewController{
         
         
         //create file container in project folder
-        if( !(manager.fileExistsAtPath(originalFilesDirectory.path!)) ){
+        if( !(manager.fileExists(atPath: originalFilesDirectory.path)) ){
             do{
-                try manager.createDirectoryAtURL(originalFilesDirectory, withIntermediateDirectories: true, attributes: nil);
+                try manager.createDirectory(at: originalFilesDirectory, withIntermediateDirectories: true, attributes: nil);
                 
             }
             catch{
@@ -126,9 +146,9 @@ class ViewController1: NSViewController{
             
         }
         //create file specs container in project folder
-        if( !(manager.fileExistsAtPath(fileSpecsDirectory.path!)) ){
+        if( !(manager.fileExists(atPath: fileSpecsDirectory.path)) ){
             do{
-                try manager.createDirectoryAtURL(fileSpecsDirectory, withIntermediateDirectories: true, attributes: nil);
+                try manager.createDirectory(at: fileSpecsDirectory, withIntermediateDirectories: true, attributes: nil);
                 
             }catch{
                 
@@ -140,7 +160,7 @@ class ViewController1: NSViewController{
         //write everything out
         for i in 0...(arrayOfFileSpecs.count - 1){
             do{
-                try allMyInfo[i].writeToFile(filePath[i].path!, atomically: true, encoding: NSUTF8StringEncoding);
+                try allMyInfo[i].write(toFile: filePath[i].path, atomically: true, encoding: String.Encoding.utf8);
                 
             } catch{
                 
@@ -149,15 +169,15 @@ class ViewController1: NSViewController{
         }
         
         //check for waitlist
-        let desktopDirectoryForQueue: NSURL = NSURL(fileURLWithPath: NSHomeDirectory()).URLByAppendingPathComponent("Desktop");
+        let desktopDirectoryForQueue: URL = URL(fileURLWithPath: NSHomeDirectory()).appendingPathComponent("Desktop");
         let waitList: String = "3D_Printing_Request_Queue_" + (mainWindow?.semester)! + ".xls";
-        let waitListLocation:NSURL = desktopDirectoryForQueue.URLByAppendingPathComponent(waitList);
+        let waitListLocation:URL = desktopDirectoryForQueue.appendingPathComponent(waitList);
         let waitListInitialContent: String = "Name \t Date \t File \t Job Paid For \t Print Completed \t Email Sent \t Est. Material \t Est. Time \t Price";
         
 
-        if( !manager.fileExistsAtPath(waitListLocation.path!)){
+        if( !manager.fileExists(atPath: waitListLocation.path)){
             do{
-                try waitListInitialContent.writeToFile(waitListLocation.path!, atomically: true, encoding: NSUTF8StringEncoding);
+                try waitListInitialContent.write(toFile: waitListLocation.path, atomically: true, encoding: String.Encoding.utf8);
             }catch{
                 
             }
@@ -166,27 +186,27 @@ class ViewController1: NSViewController{
         var destinationFileLocation = [String]();
         for item in arrayOfFileNames{
             
-            destinationFileLocation.append((originalFilesDirectory.URLByAppendingPathComponent(item)).path!)
+            destinationFileLocation.append((originalFilesDirectory.appendingPathComponent(item)).path)
         }
         
         
         
         //Determines whether or not the queue is open in excel or not. If it is open, an alert will pop up and prompt the user to save and close the queue before continuing.
-        let task: NSTask = NSTask();
+        let task: Process = Process();
         task.launchPath = "/usr/sbin/lsof";
         let filepath = "/Users/template/Desktop/3D_Printing_Request_Queue_" + (mainWindow?.semester)! + ".xls";
         
-        let pipe:NSPipe = NSPipe();
+        let pipe:Pipe = Pipe();
         task.arguments = [filepath];
         
         task.standardOutput = pipe;
-        var h:NSFileHandle = NSFileHandle();
+        var h:FileHandle = FileHandle();
         h = pipe.fileHandleForReading;
-        var data: NSData = NSData();
+        var data: Data = Data();
         task.launch();
         data = h.readDataToEndOfFile();
         
-        let response = NSString.init(data: data, encoding: NSUTF8StringEncoding);
+        let response = NSString.init(data: data, encoding: String.Encoding.utf8.rawValue);
         
         if( response?.length > 0){
             let fileIsOpenError = NSAlert()
@@ -202,7 +222,7 @@ class ViewController1: NSViewController{
             if(arrayOfFileLocations[i].characters.count != 0){
                 
                 do{
-                    try manager.copyItemAtPath(arrayOfFileLocations[i], toPath: destinationFileLocation[i]);
+                    try manager.copyItem(atPath: arrayOfFileLocations[i], toPath: destinationFileLocation[i]);
                 }catch{
                     
                 }
@@ -220,13 +240,13 @@ class ViewController1: NSViewController{
             waitListContent.append(temp);
         }
         
-        var handle: NSFileHandle;
+        var handle: FileHandle;
         do{
-            try handle = NSFileHandle(forUpdatingURL: waitListLocation);
+            try handle = FileHandle(forUpdating: waitListLocation);
             handle.seekToEndOfFile();
             
             for item in waitListContent{
-                handle.writeData(item .dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)!);
+                handle.write(item .data(using: String.Encoding.utf8, allowLossyConversion: true)!);
             }
             handle.closeFile();
             
@@ -251,7 +271,7 @@ class ViewController1: NSViewController{
         //Insert new row in the table view
         let newRowIndex = mainWindow!.printOrderArray.count;
         for _ in tableCount...arrayCount-1 {
-            self.mainWindow?.mainTable.insertRowsAtIndexes(NSIndexSet(index: newRowIndex), withAnimation: NSTableViewAnimationOptions());
+            self.mainWindow?.mainTable.insertRows(at: IndexSet(integer: newRowIndex), withAnimation: NSTableViewAnimationOptions());
         }
         
         
@@ -260,7 +280,7 @@ class ViewController1: NSViewController{
         self.clearAllInstanceArrays();
         
         //closes the window
-        self.dismissController(self);
+        self.dismiss(self);
     }
     
     
